@@ -1,17 +1,18 @@
 import datetime
+import os
 
 from flask import Flask
 from flask_jwt import JWT
 from flask_restful import Api
 
 from resources.item import Item, Items
-from resources.user import UserSignUp
 from resources.store import Store, Stores
+from resources.user import UserSignUp
 from security import authenticate, identity
 
 app = Flask(__name__)
 app.secret_key = 'faefasdfawefas'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///data.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
 api = Api(app)
@@ -19,6 +20,7 @@ api = Api(app)
 app.config['JWT_AUTH_URL_RULE'] = '/login'  # /login
 app.config['JWT_EXPIRATION_DELTA'] = datetime.timedelta(seconds=3600)
 jwt = JWT(app, authenticate, identity)
+
 
 # when deploy to heroku, use run.py. Comment out the following 3 lines
 # @app.before_first_request

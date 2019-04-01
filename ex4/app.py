@@ -20,10 +20,10 @@ app.config['JWT_AUTH_URL_RULE'] = '/login'  # /login
 app.config['JWT_EXPIRATION_DELTA'] = datetime.timedelta(seconds=3600)
 jwt = JWT(app, authenticate, identity)
 
-
-@app.before_first_request
-def create_tables():
-    db.create_all()
+# when deploy to heroku, use run.py. Comment out the following 3 lines
+# @app.before_first_request
+# def create_tables():
+#     db.create_all()
 
 
 @app.route('/')
@@ -38,8 +38,8 @@ api.add_resource(Stores, '/stores')
 api.add_resource(Store, '/store/<string:name>')
 
 # if run in pycharm, comment out next line
-# if __name__ == '__main__':
-from db import db
+if __name__ == '__main__':
+    from db import db
 
-db.init_app(app)
-app.run(debug=True)
+    db.init_app(app)
+    app.run(port=5000, debug=True)

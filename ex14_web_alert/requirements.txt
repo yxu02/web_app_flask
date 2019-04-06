@@ -1,0 +1,4 @@
+flask
+passlib
+pymongo=3.*
+beautifulsoup4=4.*

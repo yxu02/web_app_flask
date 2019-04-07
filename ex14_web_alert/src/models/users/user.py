@@ -1,7 +1,7 @@
 from uuid import uuid4
 from src.commons.database import Database
 from src.commons.utils import Utils
-from src.models.users.errors import IncorrectPasswordError, UserNotExistsError
+from src.models.users.errors import IncorrectPasswordError, UserNotExistsError, UserRegisterError
 
 
 class User:
@@ -23,3 +23,23 @@ class User:
             if not Utils.check_hashed_password(password, user['password']):
                 raise IncorrectPasswordError("Password not match!")
         return True
+
+    def json(self):
+        return {
+            "_id": self._id,
+            "email": self.email,
+            "password": self.password
+        }
+
+    @classmethod
+    def register_user(cls, email, password):
+        user = Database.find_one('users', {'email': email})
+
+        if user is not None:
+            raise UserRegisterError("User already exists!")
+        else:
+            cls(email, Utils.hash_password(password)).save_to_db()
+        return True
+
+    def save_to_db(self):
+        Database.insert('users', self.json())

@@ -21,3 +21,7 @@ class Database:
     @classmethod
     def find_one(cls, collection, query):
         return cls.DATABASE[collection].find_one(query)
+
+    @classmethod
+    def update(cls, collection, query, data):
+        cls.DATABASE[collection].update(query, data, upsert=True)
